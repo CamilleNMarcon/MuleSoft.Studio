@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd">
+	<flow name="typeOf" doc:id="196bb2ea-4495-4e81-9800-08677ef9f3a0" >
+		<scheduler doc:name="Scheduler" doc:id="664af725-ce53-4890-8159-e05e591a2835" >
+			<scheduling-strategy >
+				<fixed-frequency startDelay="1000" timeUnit="DAYS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<set-payload value='#[{"accounts":{
+&#10;		"account":{
+&#10;			"accountName": "ABC Widgets", "type":"Name Customer", "stage":"Qualification"
+&#10;		          }
+&#10;		       }
+&#10;  }]' doc:name="set to json" doc:id="c93d7280-15dc-4362-9cc6-2938649133d6" />
+		<logger level="INFO" doc:name="typeof (payload)" doc:id="03ad8c65-4b66-45a7-a522-1a1c695cf059" message="#[typeOf(payload)]"/>
+	</flow>
+</mule>
