@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:db="http://www.mulesoft.org/schema/mule/db" xmlns:batch="http://www.mulesoft.org/schema/mule/batch"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd">
+	<http:request-config name="HTTP_Request_configuration" doc:name="HTTP Request configuration" doc:id="0e2ff69f-2418-4254-86c9-b8e25924e9e7" >
+		<http:request-connection host="localhost" port="8081"/>
+	</http:request-config>
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c94c2e06-9f98-4178-9767-2303bac890b4" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<http:listener-config name="HTTP_Listener_config1" doc:name="HTTP Listener config" doc:id="0033baea-bb3c-442d-9771-3daba02ad6c3" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="request-test" doc:id="d324aefd-313e-4a2e-b1ba-39510b3d8237" >
+		<http:listener doc:name="Listener" doc:id="2723ac4d-c0a7-4560-ac88-4c6eade51c86" config-ref="HTTP_Listener_config" path="/request"/>
+		<set-payload value='#["order 1"]' doc:name='"order 1"' doc:id="ca223311-bd26-4c25-a389-0bbbfe19cf25" />
+		<set-variable value="#[1]" doc:name="quantity to 1" doc:id="25ea7689-f80e-47cf-8be0-a6be3a060468" variableName="quantity" />
+		<http:request method="POST" doc:name="POST: HTTP / child" doc:id="01118267-f28b-4f80-8074-667d44362117" config-ref="HTTP_Request_configuration" path="/child3">
+		</http:request>
+		<logger level="INFO" doc:name="Logger" doc:id="9d1af8a0-0d1a-4e50-8349-23b979c4d6f0" message="#[payload]"/>
+	</flow>
+	<flow name="request-test1" doc:id="bcabaae5-524e-4821-b62f-4cc413d14efc" >
+		<http:listener doc:name="HTTP: POST /child" doc:id="439c8b1b-b50b-4862-a674-171bba1acc00" config-ref="HTTP_Listener_config1" path="/child3"/>
+		<logger level="INFO" doc:name="Logger" doc:id="bbd416b2-7ebc-4e44-9d6f-3bd047c53cd8" message="#[payload]"/>
+	</flow>
+</mule>
