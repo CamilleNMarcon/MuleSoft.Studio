@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+	<validation:config name="Validation_Config" doc:name="Validation Config" doc:id="b9744717-cd2c-4e1b-8d3c-f2008fcaca04" />
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="c2b17260-aa45-41ef-9628-6d0c2641f4c5" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="try_error_handling" doc:id="b9635697-19fb-4ef8-a2a2-0357ea8422f9" >
+		<http:listener doc:name="Listener" doc:id="1c9b150a-7729-4787-a0dd-34d29c6c2c0c" config-ref="HTTP_Listener_config" path="/try"/>
+		<try doc:name="Try" doc:id="1125033c-fca8-4016-8796-a80c605eca86" >
+			<validation:is-null doc:name="Is null" doc:id="e6fd07b3-7da4-4a32-92f2-b7d5a1616742" config-ref="Validation_Config" value="#[payload]"/>
+			<error-handler >
+				<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="457c1347-05b4-4ac8-bbff-4357e31ca305" >
+					<set-payload value='#["ERROR 1"]' doc:name='"ERROR 1"' doc:id="a8da03d7-3f71-4ca2-b8ab-494fcdfa45f7" />
+				</on-error-propagate>
+<!-- 				<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="8a4e9dad-d65c-4092-b20e-4b13729885d3" > -->
+<!-- 				</on-error-continue> -->
+			</error-handler>
+		</try>
+		<set-payload value='#["END"]' doc:name='"END"' doc:id="702258ec-ace6-4945-8e43-10e712582c29" />
+		<error-handler >
+<!-- 			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="ea2252cb-1a0b-414e-944e-d2fa03ffc3e2" > -->
+<!-- 			</on-error-continue> -->
+			<on-error-propagate enableNotifications="true" logException="true" doc:name="On Error Propagate" doc:id="7c2be9bf-090f-417e-b0dd-1605f5ab2318" >
+				<set-payload value='#["ERROR 2"]' doc:name='"ERROR 2"' doc:id="62eecba3-13c8-4ae1-a0e3-1ae47e657d6d" />
+			</on-error-propagate>
+		</error-handler>
+	</flow>
+</mule>
