@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:batch="http://www.mulesoft.org/schema/mule/batch" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/batch http://www.mulesoft.org/schema/mule/batch/current/mule-batch.xsd">
+	<flow name="batch_stepFlow" doc:id="5dab680e-4b4e-4324-997d-37da934322d1" >
+		<scheduler doc:name="Scheduler" doc:id="d41a60a2-4361-46a3-b13c-4f4a3090e086" >
+			<scheduling-strategy >
+				<fixed-frequency startDelay="1000" timeUnit="DAYS"/>
+			</scheduling-strategy>
+		</scheduler>
+		<set-payload value='#[[{"size": "large", "amount":1000, "price":400.00},
+&#10;{"size": "medium", "amount":400, "price":600.00},
+&#10;{"size": "small", "amount":1, "price":800.00}]]' doc:name="Payload" doc:id="a9d938ae-acb5-4cbc-b8b5-bf5306b8a85d" />
+		<batch:job jobName="batch_stepBatch_Job" doc:id="637703a7-3a24-4e9b-aee8-443914bc5800" maxFailedRecords="-1">
+			<batch:process-records >
+				<batch:step name="Batch_Step" doc:id="942e151d-07d6-42ab-aa9b-be11414fe95c" acceptExpression="#[payload.amount &lt; 500]" acceptPolicy="ALL">
+					<set-payload value='#["amount": payload.amount + 100]' doc:name='{"amount":payload.amout + 100}' doc:id="d3a06bcb-5760-400a-a46c-b20be91ac8f6" />
+					<logger level="INFO" doc:name="Payload" doc:id="9994cf06-53ba-4e53-9708-869b04875aed" message="#[payload]"/>
+				</batch:step>
+				<batch:step name="Batch_Step1" doc:id="aaddb2fb-35de-4172-950e-289fa4687213" acceptExpression="#[payload.amount &gt; 200]" acceptPolicy="ALL">
+					<set-payload value='#["amount2":payload.amount]' doc:name='{"amount2":payload.amount}' doc:id="147b97b1-22bd-4575-a64a-0f890e27b453" />
+					<logger level="INFO" doc:name="Payload" doc:id="630f2bc7-444e-4574-b1d1-c4990b22bbe1" message="#[payload]" />
+				</batch:step>
+			</batch:process-records>
+			<batch:on-complete >
+				<logger level="INFO" doc:name="Complete" doc:id="120bccb9-f9f1-4b8c-8e04-08f1af0c1c74" message="#[payload]"/>
+			</batch:on-complete>
+		</batch:job>
+	</flow>
+</mule>
