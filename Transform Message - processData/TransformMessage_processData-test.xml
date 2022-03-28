@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="f1bc4d21-3435-4166-aad3-ad83fb07ddf4" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="TransformMessageTest" doc:id="7dcc26b0-1bc0-46db-ae8d-539c721ae0b0" >
+		<http:listener doc:name="Listener" doc:id="5a444fc6-b116-483b-b26a-3a8eadaa161c" config-ref="HTTP_Listener_config" path="/main"/>
+		<set-payload value='#["cars"]' doc:name='"cars"' doc:id="62f15776-6367-476c-901b-863d5a4a83cd" />
+		<set-variable value='#["model"]' doc:name="model" doc:id="5cb26d43-824c-4489-8552-835bad5f059b" variableName="model"/>
+		<flow-ref doc:name="child" doc:id="7fc5439c-083c-44a9-a261-c8ddabebe006" name="child"/>
+		<logger level="INFO" doc:name="Logger" doc:id="c72b6e80-9b44-4d05-be41-6bdb4ed11fbb" message="#[payload]"/>
+	</flow>
+	<flow name="child" doc:id="a3d11248-d019-43a0-967d-c31a031f9362" >
+		<logger level="INFO" doc:name="child" doc:id="3f393ed1-88c1-4085-9169-29bd215db93c" />
+	</flow>
+</mule>
