@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="5f32c70b-a989-4a5d-a09d-3c7298fd058a" >
+		<http:listener-connection host="localhost" port="8081" />
+	</http:listener-config>
+	<flow name="lookup-orders" doc:id="4079ea9c-ab2f-4ace-9872-010e14f6e7b6" >
+		<http:listener doc:name="Post /orders" doc:id="875303d8-b8e0-4bfa-bd9d-bdb4ad4195f3" config-ref="HTTP_Listener_config" path="/orders"/>
+		<set-payload value='#[lookup( "addltern", { price: "100", item: "router", itemType: "cable" } )]' doc:name="Add item to order" doc:id="d542d4d3-5a17-4660-8a0e-f22142da1ed5" />
+	</flow>
+	<flow name="addltern" doc:id="cf725720-558f-4661-9880-ed62b940766f" >
+		<set-payload value="#[%dw 2.0&#10;output application/json&#10;---&#10;order: {&#10;	item: {&#10;		itemName:payload.item,&#10;		itemType:payload.itemType,&#10;		price:payload.price&#10;		}&#10;&#10;}]" doc:name="data" doc:id="654105ed-b7c8-48d3-b12c-fd8df7ed0354" />
+	</flow>
+</mule>
